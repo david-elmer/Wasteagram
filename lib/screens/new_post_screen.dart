@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 
 class NewPostScreen extends StatefulWidget {
@@ -14,10 +16,14 @@ class _NewPostScreenState extends State<NewPostScreen> {
   LocationData? locationData;
   var locationService = Location();
 
+  File? image;
+  final picker = ImagePicker();
+
   @override
   void initState() {
     super.initState();
     retrieveLocation();
+    // getImage();
   }
 
   // retrieveLocation function from exploration - share_location_screen.dart
@@ -46,26 +52,52 @@ class _NewPostScreenState extends State<NewPostScreen> {
       locationData = null;
     }
     locationData = await locationService.getLocation();
-    setState(() {});
 
+    getImage();
+
+    setState(() {});
+  }
+
+  void getImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    image = File(pickedFile!.path);
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    if (locationData == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('New Post'),
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('New Post'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            displayImage(),
+            displayLocation()
+          ],
         ),
-        body: const Center(child: CircularProgressIndicator()),
-      );
+      ),
+    );
+  }
+
+  Widget displayImage() {
+    if (image == null) {
+      return const CircularProgressIndicator();
     } else {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('New Post'),
-        ),
-        body: Center(child: Text('Location: (${locationData?.latitude}, ${locationData?.longitude})')),
-      );
+      return Image.file(image as File);
     }
   }
+
+  Widget displayLocation() {
+    if (locationData == null) {
+      return const CircularProgressIndicator();
+    } else {
+      return Text('Location: (${locationData?.latitude}, ${locationData?.longitude})');
+    }
+  }
+
 }
