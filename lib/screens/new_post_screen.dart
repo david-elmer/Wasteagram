@@ -19,11 +19,15 @@ class _NewPostScreenState extends State<NewPostScreen> {
   File? image;
   final picker = ImagePicker();
 
+  String? numberOfItems;
+
+  final formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
     retrieveLocation();
-    // getImage();
+    getImage();
   }
 
   // retrieveLocation function from exploration - share_location_screen.dart
@@ -53,7 +57,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
     }
     locationData = await locationService.getLocation();
 
-    getImage();
+    // getImage();
 
     setState(() {});
   }
@@ -71,14 +75,47 @@ class _NewPostScreenState extends State<NewPostScreen> {
       appBar: AppBar(
         title: const Text('New Post'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            displayImage(),
-            displayLocation()
-          ],
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Form(
+          key: formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              displayImage(),
+              TextFormField(
+                decoration: const InputDecoration(
+                  hintText: 'Number of Wasted Items',
+                  border: UnderlineInputBorder()
+                ),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline5,
+                keyboardType: TextInputType.number,
+                onSaved: (value) {
+                  numberOfItems = value;
+                },
+                validator: (value) {
+                  if (value != null && value.isEmpty) {
+                    return 'Please enter a number of items';
+                  } else {
+                    return null;
+                  }
+                },
+              ),
+              displayLocation(),
+              ElevatedButton(
+                onPressed: () {
+                  var isValid = formKey.currentState?.validate();
+                    if (isValid != null && isValid) {
+                      formKey.currentState?.save();
+                    }
+                  // write to database
+                },
+                child: const Icon(Icons.upload)                
+              )
+            ],
+          ),
         ),
       ),
     );
