@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DetailScreen extends StatelessWidget {
 
-  Map<String, dynamic> post;
+  QueryDocumentSnapshot<Object?> post;
 
   DetailScreen({required this.post});
 
@@ -17,10 +18,22 @@ class DetailScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Center(child: Text('${post['date']}')),
-            Center(child: Text('${post['image']}')),
-            Center(child: Text('${post['numberOfItems']} items')),
-            Center(child: Text('Location: (${post['latitude']}, ${post['longitude']})'))
+            Center(child: Text(
+              '${post['date']}',
+              style: Theme.of(context).textTheme.headline5
+              )
+            ),
+            Center(child: Image.network(post['imageURL'])),
+            Center(child: Text(
+              '${post['quantity'].toString()} items',
+              style: Theme.of(context).textTheme.headline5
+              )
+            ),
+            Center(child: Text(
+              'Location: (${post['latitude'].toString()}, ${post['longitude'].toString()})',
+              style: Theme.of(context).textTheme.subtitle1
+              )
+            )
           ],
         ),
       ),
