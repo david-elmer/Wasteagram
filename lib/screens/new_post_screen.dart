@@ -119,10 +119,14 @@ class _NewPostScreenState extends State<NewPostScreen> {
               ElevatedButton(
                 onPressed: () {
                   var isValid = formKey.currentState?.validate();
-                    if (isValid != null && isValid) {
-                      formKey.currentState?.save();
-                    }
+                  if (isValid != null && isValid) {
+                    formKey.currentState?.save();
+                  }
+
                   // write to database
+
+                  // return to list screen
+
                 },
                 child: const Icon(Icons.cloud_upload_rounded)                
               )
