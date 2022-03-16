@@ -19,7 +19,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   File? image;
   final picker = ImagePicker();
 
-  String? numberOfItems;
+  int numberOfItems = 0;
 
   final formKey = GlobalKey<FormState>();
 
@@ -93,7 +93,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 style: Theme.of(context).textTheme.headline5,
                 keyboardType: TextInputType.number,
                 onSaved: (value) {
-                  numberOfItems = value;
+                  if (value != null) {
+                    numberOfItems = int.parse(value);
+                  }
                 },
                 validator: (value) {
                   if (value != null && value.isEmpty) {
@@ -112,7 +114,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                     }
                   // write to database
                 },
-                child: const Icon(Icons.upload)                
+                child: const Icon(Icons.cloud_upload_rounded)                
               )
             ],
           ),
