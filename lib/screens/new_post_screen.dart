@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 
@@ -18,6 +19,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   File? image;
   final picker = ImagePicker();
+  var imageURL = '';
 
   int numberOfItems = 0;
 
@@ -62,9 +64,17 @@ class _NewPostScreenState extends State<NewPostScreen> {
     setState(() {});
   }
 
+  // getImage based on week 9 exploration 3.4 video and camera_screen.dart
   void getImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    image = File(pickedFile!.path);
+    image = File(pickedFile!.path);    
+
+    var fileName = DateTime.now().toString() + '.jpg';
+    Reference storageReference = FirebaseStorage.instance.ref().child(fileName);
+    UploadTask uploadTask = storageReference.putFile(image!);
+    await uploadTask;
+    imageURL = await storageReference.getDownloadURL();
+
     setState(() {});
   }
 
