@@ -6,7 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
-import '../models/post.dart';
+import '../models/food_waste_post.dart';
 
 class NewPostScreen extends StatefulWidget {
   const NewPostScreen({Key? key}) : super(key: key);
@@ -24,7 +24,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   final picker = ImagePicker();
 
   final formKey = GlobalKey<FormState>();
-  final post = Post();
+  final post = FoodWastePost();
 
   @override
   void initState() {
