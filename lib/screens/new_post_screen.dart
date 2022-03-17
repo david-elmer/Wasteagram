@@ -136,7 +136,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
                     // add date to post
                     post.date = DateFormat('EEE, MMMM dd, yyyy').format(DateTime.now());
-                    
+
                     // add location to post
                     await retrieveLocation();
 
@@ -148,7 +148,13 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   }
 
                 },
-                child: const Icon(Icons.cloud_upload_rounded)                
+                child: const Icon(
+                  Icons.cloud_upload_rounded,
+                  size: 75.0,
+                ),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size.fromHeight(100)
+                )              
               )
             ],
           ),
