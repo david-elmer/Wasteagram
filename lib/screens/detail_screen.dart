@@ -23,7 +23,12 @@ class DetailScreen extends StatelessWidget {
               style: Theme.of(context).textTheme.headline5
               )
             ),
-            Center(child: Image.network(post['imageURL'])),
+            Center(child: Semantics(
+                child: Image.network(post['imageURL']),
+                image: true,
+                label: 'Food waste item image'
+              ),
+            ),
             Center(child: Text(
               '${post['quantity'].toString()} items',
               style: Theme.of(context).textTheme.headline5

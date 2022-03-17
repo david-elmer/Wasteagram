@@ -125,36 +125,40 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 },
               ),
               // displayLocation(),
-              ElevatedButton(
-                onPressed: () async {
-                  var isValid = formKey.currentState?.validate();
-                  if (isValid != null && isValid) {
-                    formKey.currentState?.save();
-                  
-                    // upload image to Cloud Firestore
-                    await uploadImage();
+              Semantics(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    var isValid = formKey.currentState?.validate();
+                    if (isValid != null && isValid) {
+                      formKey.currentState?.save();
+                    
+                      // upload image to Cloud Firestore
+                      await uploadImage();
 
-                    // add date to post
-                    post.date = DateFormat('EEE, MMMM dd, yyyy').format(DateTime.now());
+                      // add date to post
+                      post.date = DateFormat('EEE, MMMM dd, yyyy').format(DateTime.now());
 
-                    // add location to post
-                    await retrieveLocation();
+                      // add location to post
+                      await retrieveLocation();
 
-                    // write to database
-                    await FirebaseFirestore.instance.collection('posts').add(post.toMap());
+                      // write to database
+                      await FirebaseFirestore.instance.collection('posts').add(post.toMap());
 
-                    // return to list screen
-                    Navigator.of(context).pop();
-                  }
+                      // return to list screen
+                      Navigator.of(context).pop();
+                    }
 
-                },
-                child: const Icon(
-                  Icons.cloud_upload_rounded,
-                  size: 75.0,
+                  },
+                  child: const Icon(
+                    Icons.cloud_upload_rounded,
+                    size: 75.0,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size.fromHeight(100)
+                  )              
                 ),
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size.fromHeight(100)
-                )              
+                button: true,
+                onTapHint: 'Press to upload the post',
               )
             ],
           ),
@@ -167,7 +171,11 @@ class _NewPostScreenState extends State<NewPostScreen> {
     if (image == null) {
       return const CircularProgressIndicator();
     } else {
-      return Image.file(image as File);
+      return Semantics(
+        child: Image.file(image as File),
+        image: true,
+        label: 'Selected image',
+      );
     }
   }
 

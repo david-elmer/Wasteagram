@@ -16,13 +16,17 @@ class ListScreen extends StatelessWidget {
       body: PostListView(),
       floatingActionButton: Builder(
         builder: (context) {
-          return FloatingActionButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const NewPostScreen())
-              );
-            },
-            child: const Icon(Icons.camera_alt)
+          return Semantics(
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const NewPostScreen())
+                );
+              },
+              child: const Icon(Icons.camera_alt)
+            ),
+            button: true,
+            onTapHint: 'Press to select an image from the gallery',
           );
         },
       ),
