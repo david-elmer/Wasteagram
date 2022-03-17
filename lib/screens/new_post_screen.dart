@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:location/location.dart';
+import '../models/post.dart';
 
 class NewPostScreen extends StatefulWidget {
   const NewPostScreen({Key? key}) : super(key: key);
@@ -19,21 +22,19 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   File? image;
   final picker = ImagePicker();
-  var imageURL = '';
-
-  int numberOfItems = 0;
 
   final formKey = GlobalKey<FormState>();
+  final post = Post();
 
   @override
   void initState() {
     super.initState();
-    retrieveLocation();
+    // retrieveLocation();
     getImage();
   }
 
   // retrieveLocation function from exploration - share_location_screen.dart
-  void retrieveLocation() async {
+  Future retrieveLocation() async {
     try {
       var _serviceEnabled = await locationService.serviceEnabled();
       if (!_serviceEnabled) {
@@ -58,8 +59,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
       locationData = null;
     }
     locationData = await locationService.getLocation();
-
-    // getImage();
+    post.latitude = locationData?.latitude;
+    post.longitude = locationData?.longitude;
 
     setState(() {});
   }
@@ -69,13 +70,21 @@ class _NewPostScreenState extends State<NewPostScreen> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     image = File(pickedFile!.path);    
 
+    // var fileName = DateTime.now().toString() + '.jpg';
+    // Reference storageReference = FirebaseStorage.instance.ref().child(fileName);
+    // UploadTask uploadTask = storageReference.putFile(image!);
+    // await uploadTask;
+    // post.imageURL = await storageReference.getDownloadURL();
+
+    setState(() {});
+  }
+
+  Future uploadImage() async {
     var fileName = DateTime.now().toString() + '.jpg';
     Reference storageReference = FirebaseStorage.instance.ref().child(fileName);
     UploadTask uploadTask = storageReference.putFile(image!);
     await uploadTask;
-    imageURL = await storageReference.getDownloadURL();
-
-    setState(() {});
+    post.imageURL = await storageReference.getDownloadURL();
   }
 
   @override
@@ -104,7 +113,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 keyboardType: TextInputType.number,
                 onSaved: (value) {
                   if (value != null) {
-                    numberOfItems = int.parse(value);
+                    post.quantity = int.parse(value);
                   }
                 },
                 validator: (value) {
@@ -115,17 +124,28 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   }
                 },
               ),
-              displayLocation(),
+              // displayLocation(),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   var isValid = formKey.currentState?.validate();
                   if (isValid != null && isValid) {
                     formKey.currentState?.save();
+                  
+                    // upload image to Cloud Firestore
+                    await uploadImage();
+
+                    // add date to post
+                    post.date = DateFormat('EEE, MMMM dd, yyyy').format(DateTime.now());
+                    
+                    // add location to post
+                    await retrieveLocation();
+
+                    // write to database
+                    await FirebaseFirestore.instance.collection('posts').add(post.toMap());
+
+                    // return to list screen
+                    Navigator.of(context).pop();
                   }
-
-                  // write to database
-
-                  // return to list screen
 
                 },
                 child: const Icon(Icons.cloud_upload_rounded)                
