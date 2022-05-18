@@ -105,6 +105,27 @@ class _NewPostScreenState extends State<NewPostScreen> {
               displayImage(),
               TextFormField(
                 decoration: const InputDecoration(
+                  hintText: 'Item Name',
+                  border: UnderlineInputBorder()
+                ),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline5,
+                keyboardType: TextInputType.text,
+                onSaved: (value) {
+                  if (value != null) {
+                    post.item = value;
+                  }
+                },
+                validator: (value) {
+                  if (value != null && value.isEmpty) {
+                    return 'Please enter an item name';
+                  } else {
+                    return null;
+                  }
+                },
+              ),
+              TextFormField(
+                decoration: const InputDecoration(
                   hintText: 'Number of Wasted Items',
                   border: UnderlineInputBorder()
                 ),
