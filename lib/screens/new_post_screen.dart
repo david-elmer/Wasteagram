@@ -68,13 +68,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   // getImage based on week 9 exploration 3.4 video and camera_screen.dart
   void getImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    image = File(pickedFile!.path);    
-
-    // var fileName = DateTime.now().toString() + '.jpg';
-    // Reference storageReference = FirebaseStorage.instance.ref().child(fileName);
-    // UploadTask uploadTask = storageReference.putFile(image!);
-    // await uploadTask;
-    // post.imageURL = await storageReference.getDownloadURL();
+    image = File(pickedFile!.path);
 
     setState(() {});
   }

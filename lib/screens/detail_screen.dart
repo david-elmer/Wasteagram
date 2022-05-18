@@ -30,6 +30,11 @@ class DetailScreen extends StatelessWidget {
               ),
             ),
             Center(child: Text(
+              'Item: ${post['item']}',
+              style: Theme.of(context).textTheme.headline5
+              )
+            ),
+            Center(child: Text(
               '${post['quantity'].toString()} items',
               style: Theme.of(context).textTheme.headline5
               )

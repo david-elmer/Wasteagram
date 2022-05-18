@@ -16,17 +16,20 @@ class PostListView extends StatelessWidget {
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
               var post = snapshot.data!.docs[index];
-              return ListTile(
-                leading: Text(
-                  post['date']),
-                trailing: Text(post['quantity'].toString()),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => DetailScreen(post: post)
-                    )
-                  );
-                },
+              return Card(
+                child: ListTile(
+                  trailing: Text(
+                    post['date']),
+                  title: Text(post['item']),
+                  subtitle: Text('${post['quantity'].toString()} items'),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => DetailScreen(post: post)
+                      )
+                    );
+                  },
+                ),
               );
             }
           );
