@@ -7,6 +7,7 @@ void main() {
   test('Post created with fromMap constructor saves attributes correctly', () {
     final date = DateFormat('EEE, MMMM dd, yyyy').format(DateTime.now());
     const imageURL = 'test_url';
+    const item = 'test_item';
     const quantity = 5;
     const latitude = 40.7128;
     const longitude = 74.0060;
@@ -14,6 +15,7 @@ void main() {
     final foodWastePost = FoodWastePost.fromMap({
       'date' : date,
       'imageURL': imageURL,
+      'item': item,
       'quantity': quantity,
       'latitude': latitude,
       'longitude': longitude
@@ -21,6 +23,7 @@ void main() {
 
     expect(foodWastePost.date, date);
     expect(foodWastePost.imageURL, imageURL);
+    expect(foodWastePost.item, item);
     expect(foodWastePost.quantity, quantity);
     expect(foodWastePost.latitude, latitude);
     expect(foodWastePost.longitude, longitude);
@@ -29,6 +32,7 @@ void main() {
   test('toMap function returns map.', () {
     final date = DateFormat('EEE, MMMM dd, yyyy').format(DateTime.now());
     const imageURL = 'test_url';
+    const item = 'test_item';
     const quantity = 5;
     const latitude = 40.7128;
     const longitude = 74.0060;
@@ -37,6 +41,7 @@ void main() {
 
     foodWastePost.date = date;
     foodWastePost.imageURL = imageURL;
+    foodWastePost.item = item;
     foodWastePost.quantity = quantity;
     foodWastePost.latitude = latitude;
     foodWastePost.longitude = longitude;
@@ -47,6 +52,7 @@ void main() {
   test('toMap function returns map with appropriate values', () {
     final date = DateFormat('EEE, MMMM dd, yyyy').format(DateTime.now());
     const imageURL = 'test_url';
+    const item = 'test_item';
     const quantity = 5;
     const latitude = 40.7128;
     const longitude = 74.0060;
@@ -56,6 +62,7 @@ void main() {
 
     foodWastePost.date = date;
     foodWastePost.imageURL = imageURL;
+    foodWastePost.item = item;
     foodWastePost.quantity = quantity;
     foodWastePost.latitude = latitude;
     foodWastePost.longitude = longitude;
@@ -63,6 +70,7 @@ void main() {
     Map<String, dynamic> expected = {
       'date': date,
       'imageURL': imageURL,
+      'item': item,
       'quantity': quantity,
       'latitude' : latitude,
       'longitude': longitude
