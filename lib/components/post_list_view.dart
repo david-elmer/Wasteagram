@@ -7,7 +7,7 @@ class PostListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('posts').snapshots(),
+      stream: FirebaseFirestore.instance.collection('posts').orderBy('date', descending: true).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasData &&
             snapshot.data!.docs != null &&
@@ -34,7 +34,7 @@ class PostListView extends StatelessWidget {
             }
           );
         } else {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: Text('No posts to display'));
         }
       }
     );
