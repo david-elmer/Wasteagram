@@ -24,13 +24,29 @@ class _NewPostScreenState extends State<NewPostScreen> {
   final picker = ImagePicker();
 
   final formKey = GlobalKey<FormState>();
+
   final post = FoodWastePost();
 
   @override
   void initState() {
     super.initState();
-    // retrieveLocation();
     getImage();
+  }
+
+  // getImage based on week 9 exploration 3.4 video and camera_screen.dart
+  void getImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    image = File(pickedFile!.path);
+
+    setState(() {});
+  }
+
+  Future uploadImage() async {
+    var fileName = DateTime.now().toString() + '.jpg'; // unique image name
+    Reference storageReference = FirebaseStorage.instance.ref().child(fileName);
+    UploadTask uploadTask = storageReference.putFile(image!);
+    await uploadTask;
+    post.imageURL = await storageReference.getDownloadURL();
   }
 
   // retrieveLocation function from exploration - share_location_screen.dart
@@ -65,22 +81,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
     setState(() {});
   }
 
-  // getImage based on week 9 exploration 3.4 video and camera_screen.dart
-  void getImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    image = File(pickedFile!.path);
-
-    setState(() {});
-  }
-
-  Future uploadImage() async {
-    var fileName = DateTime.now().toString() + '.jpg';
-    Reference storageReference = FirebaseStorage.instance.ref().child(fileName);
-    UploadTask uploadTask = storageReference.putFile(image!);
-    await uploadTask;
-    post.imageURL = await storageReference.getDownloadURL();
-  }
-
   @override
   Widget build(BuildContext context) {
 
@@ -97,84 +97,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               displayImage(),
-              TextFormField(
-                decoration: const InputDecoration(
-                  hintText: 'Item Name',
-                  border: UnderlineInputBorder()
-                ),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline5,
-                keyboardType: TextInputType.text,
-                onSaved: (value) {
-                  if (value != null) {
-                    post.item = value;
-                  }
-                },
-                validator: (value) {
-                  if (value != null && value.isEmpty) {
-                    return 'Please enter an item name';
-                  } else {
-                    return null;
-                  }
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  hintText: 'Number of Wasted Items',
-                  border: UnderlineInputBorder()
-                ),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline5,
-                keyboardType: TextInputType.number,
-                onSaved: (value) {
-                  if (value != null) {
-                    post.quantity = int.parse(value);
-                  }
-                },
-                validator: (value) {
-                  if (value != null && value.isEmpty) {
-                    return 'Please enter a number of items';
-                  } else {
-                    return null;
-                  }
-                },
-              ),
-              // displayLocation(),
-              Semantics(
-                child: ElevatedButton(
-                  onPressed: () async {
-                    var isValid = formKey.currentState?.validate();
-                    if (isValid != null && isValid) {
-                      formKey.currentState?.save();
-                    
-                      // upload image to Cloud Firestore
-                      await uploadImage();
-
-                      // add date to post
-                      post.date = DateFormat('EEE, MMMM dd, yyyy').format(DateTime.now());
-
-                      // add location to post
-                      await retrieveLocation();
-
-                      // write to database
-                      await FirebaseFirestore.instance.collection('posts').add(post.toMap());
-
-                      // return to list screen
-                      Navigator.of(context).pop();
-                    }
-
-                  },
-                  child: const Icon(
-                    Icons.cloud_upload_rounded,
-                    size: 75.0,
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: Size.fromHeight(100)
-                  )              
-                ),
-                button: true,
-                onTapHint: 'Press to upload the post',
-              )
+              itemNameInput(context),
+              quantityInput(context),
+              uploadButton(context)
             ],
           ),
         ),
@@ -194,12 +119,90 @@ class _NewPostScreenState extends State<NewPostScreen> {
     }
   }
 
-  Widget displayLocation() {
-    if (locationData == null) {
-      return const CircularProgressIndicator();
-    } else {
-      return Text('Location: (${locationData?.latitude}, ${locationData?.longitude})');
-    }
+  Widget itemNameInput(BuildContext context) {
+    return TextFormField(
+      decoration: const InputDecoration(
+        hintText: 'Item Name',
+        border: UnderlineInputBorder()
+      ),
+      textAlign: TextAlign.center,
+      style: Theme.of(context).textTheme.headline5,
+      keyboardType: TextInputType.text,
+      onSaved: (value) {
+        if (value != null) {
+          post.item = value;
+        }
+      },
+      validator: (value) {
+        if (value != null && value.isEmpty) {
+          return 'Please enter an item name';
+        } else {
+          return null;
+        }
+      },
+    );
+  }
+
+  Widget quantityInput(BuildContext context) {
+    return TextFormField(
+      decoration: const InputDecoration(
+        hintText: 'Number of Wasted Items',
+        border: UnderlineInputBorder()
+      ),
+      textAlign: TextAlign.center,
+      style: Theme.of(context).textTheme.headline5,
+      keyboardType: TextInputType.number,
+      onSaved: (value) {
+        if (value != null) {
+          post.quantity = int.parse(value);
+        }
+      },
+      validator: (value) {
+        if (value != null && value.isEmpty) {
+          return 'Please enter a number of items';
+        } else {
+          return null;
+        }
+      },
+    );
+  }
+
+  Widget uploadButton(BuildContext context) {
+    return Semantics(
+      child: ElevatedButton(
+        onPressed: () async {
+          var isValid = formKey.currentState?.validate();
+          if (isValid != null && isValid) {
+            formKey.currentState?.save();
+          
+            // upload image to Cloud Firestore
+            await uploadImage();
+
+            // add date to post
+            post.date = DateFormat('EEE, MMMM dd, yyyy').format(DateTime.now());
+
+            // add location to post
+            await retrieveLocation();
+
+            // write to database
+            await FirebaseFirestore.instance.collection('posts').add(post.toMap());
+
+            // return to list screen
+            Navigator.of(context).pop();
+          }
+
+        },
+        child: const Icon(
+          Icons.cloud_upload_rounded,
+          size: 75.0,
+        ),
+        style: ElevatedButton.styleFrom(
+          minimumSize: Size.fromHeight(100)
+        )              
+      ),
+      button: true,
+      onTapHint: 'Press to upload the post',
+    );
   }
 
 }
