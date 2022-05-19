@@ -3,9 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DetailScreen extends StatelessWidget {
 
-  QueryDocumentSnapshot<Object?> post;
+  final QueryDocumentSnapshot<Object?> post;
 
-  DetailScreen({required this.post});
+  const DetailScreen({Key? key, required this.post}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,39 +13,32 @@ class DetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Wasteagram'),
       ),
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Center(child: Text(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
               '${post['date']}',
               style: Theme.of(context).textTheme.headline5
-              )
             ),
-            Center(child: Semantics(
-                child: Image.network(post['imageURL']),
-                image: true,
-                label: 'Food waste item image'
-              ),
-            ),
-            Center(child: Text(
-              'Item: ${post['item']}',
-              style: Theme.of(context).textTheme.headline5
-              )
-            ),
-            Center(child: Text(
-              '${post['quantity'].toString()} items',
-              style: Theme.of(context).textTheme.headline5
-              )
-            ),
-            Center(child: Text(
-              'Location: (${post['latitude'].toString()}, ${post['longitude'].toString()})',
-              style: Theme.of(context).textTheme.subtitle1
-              )
-            )
-          ],
-        ),
+          Semantics(
+            child: Image.network(post['imageURL']),
+            image: true,
+            label: 'Food waste item image'
+          ),
+          Text(
+            'Item: ${post['item']}',
+            style: Theme.of(context).textTheme.headline5
+          ),
+          Text(
+            '${post['quantity'].toString()} items',
+            style: Theme.of(context).textTheme.headline5
+          ),
+          Text(
+            'Location: (${post['latitude'].toString()}, ${post['longitude'].toString()})',
+            style: Theme.of(context).textTheme.subtitle1
+          )
+        ],
       ),
     );
   }
