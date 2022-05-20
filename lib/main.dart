@@ -7,7 +7,3 @@ Future<void> main() async {
   await Firebase.initializeApp();
   runApp(App());
 }
-
-// void main() {
-//   runApp(App());
-// }
