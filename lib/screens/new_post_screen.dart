@@ -17,14 +17,18 @@ class NewPostScreen extends StatefulWidget {
 
 class _NewPostScreenState extends State<NewPostScreen> {
 
+  // for GPS
   LocationData? locationData;
   var locationService = Location();
 
+  // for image selection and storage
   File? image;
   final picker = ImagePicker();
 
+  // for form reference
   final formKey = GlobalKey<FormState>();
 
+  // data transfer object for submitting form
   final post = FoodWastePost();
 
   @override
@@ -33,7 +37,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
     getImage();
   }
 
-  // getImage based on week 9 exploration 3.4 video and camera_screen.dart
+  // Prompt user to select image from gallery and save path to image for later
+  // use in uploading image to cloud storage
   void getImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     image = File(pickedFile!.path);
@@ -41,42 +46,55 @@ class _NewPostScreenState extends State<NewPostScreen> {
     setState(() {});
   }
 
+  // Upload image to Firebase Cloud Storage and get the URL of image for
+  // storage in the database
   Future uploadImage() async {
-    var fileName = DateTime.now().toString() + '.jpg'; // unique image name
+    var fileName = DateTime.now().toString() + '.jpg';  // create unique filename
     Reference storageReference = FirebaseStorage.instance.ref().child(fileName);
-    UploadTask uploadTask = storageReference.putFile(image!);
-    await uploadTask;
+    await storageReference.putFile(image!);
+    // get URL of uploaded image to save to database
     post.imageURL = await storageReference.getDownloadURL();
   }
 
-  // retrieveLocation function from exploration - share_location_screen.dart
+  // Obtain GPS location of device and save to DTO to be uploaded to database
+  // retrieveLocation() function modified from exploration - share_location_screen.dart
   Future retrieveLocation() async {
     try {
+      // check if service is enabled and request service if not enabled
       var _serviceEnabled = await locationService.serviceEnabled();
       if (!_serviceEnabled) {
         _serviceEnabled = await locationService.requestService();
         if (!_serviceEnabled) {
           print('Failed to enable service. Returning.');
+          post.latitude = 0;
+          post.longitude = 0;
           return;
         }
       }
 
+      // check for permission and request permission if necessary
       var _permissionGranted = await locationService.hasPermission();
       if (_permissionGranted == PermissionStatus.denied) {
         _permissionGranted = await locationService.requestPermission();
         if (_permissionGranted != PermissionStatus.granted) {
           print('Location service permission not granted. Returning.');
+          post.latitude = 0;
+          post.longitude = 0;
+          return;
         }
       }
 
+      // get location data and save to data transfer object
       locationData = await locationService.getLocation();
+      post.latitude = locationData?.latitude;
+      post.longitude = locationData?.longitude;
+
     } on PlatformException catch (e) {
       print('Error: ${e.toString()}, code: ${e.code}');
       locationData = null;
+      post.latitude = 0;
+      post.longitude = 0;
     }
-    locationData = await locationService.getLocation();
-    post.latitude = locationData?.latitude;
-    post.longitude = locationData?.longitude;
 
     setState(() {});
   }
@@ -107,6 +125,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
     );
   }
 
+  // display image picked from gallery
   Widget displayImage() {
     if (image == null) {
       return const CircularProgressIndicator();
@@ -119,6 +138,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
     }
   }
 
+  // form input for item name
   Widget itemNameInput(BuildContext context) {
     return TextFormField(
       decoration: const InputDecoration(
@@ -143,6 +163,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
     );
   }
 
+  // form input for quantity of items wasted
   Widget quantityInput(BuildContext context) {
     return TextFormField(
       decoration: const InputDecoration(
@@ -167,6 +188,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
     );
   }
 
+  // validate input, upload image to cloud,
+  // gather data for upload to database in data transfer object 'post',
+  // write to database, then return to previous screen
   Widget uploadButton(BuildContext context) {
     return Semantics(
       child: ElevatedButton(
@@ -197,7 +221,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
           size: 75.0,
         ),
         style: ElevatedButton.styleFrom(
-          minimumSize: Size.fromHeight(100)
+          minimumSize: const Size.fromHeight(100)
         )              
       ),
       button: true,
