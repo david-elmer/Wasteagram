@@ -5,7 +5,7 @@ import 'package:wasteagram/models/food_waste_post.dart';
 // adapted from exploration 10 - 1.1 video 
 void main() {
   test('Post created with fromMap constructor saves attributes correctly', () {
-    final date = DateFormat('EEE, MMMM dd, yyyy').format(DateTime.now());
+    final date = DateTime.now().millisecondsSinceEpoch;
     const imageURL = 'test_url';
     const item = 'test_item';
     const quantity = 5;
@@ -30,7 +30,7 @@ void main() {
   });
 
   test('toMap function returns map.', () {
-    final date = DateFormat('EEE, MMMM dd, yyyy').format(DateTime.now());
+    final date = DateTime.now().millisecondsSinceEpoch;
     const imageURL = 'test_url';
     const item = 'test_item';
     const quantity = 5;
@@ -50,7 +50,7 @@ void main() {
   });
 
   test('toMap function returns map with appropriate values', () {
-    final date = DateFormat('EEE, MMMM dd, yyyy').format(DateTime.now());
+    final date = DateTime.now().millisecondsSinceEpoch;
     const imageURL = 'test_url';
     const item = 'test_item';
     const quantity = 5;
