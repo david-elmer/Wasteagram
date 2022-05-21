@@ -56,7 +56,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   // Obtain GPS location of device and save to DTO to be uploaded to database
-  // retrieveLocation() function modified from exploration - share_location_screen.dart
+  // Modified from location package documentation - https://pub.dev/packages/location
   Future retrieveLocation() async {
     try {
       // check if service is enabled and request service if not enabled
@@ -88,6 +88,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
       post.latitude = locationData?.latitude;
       post.longitude = locationData?.longitude;
 
+    // default to (0, 0) upon error
     } on PlatformException catch (e) {
       print('Error: ${e.toString()}, code: ${e.code}');
       locationData = null;

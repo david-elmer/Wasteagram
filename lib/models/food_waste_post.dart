@@ -1,3 +1,7 @@
+/*
+Data Transfer Object for storing post data and writing to database
+*/
+
 class FoodWastePost {
   int? date;
   String? imageURL;
@@ -6,9 +10,7 @@ class FoodWastePost {
   int? quantity;
   String? item;
 
-  FoodWastePost() {
-    
-  }
+  FoodWastePost();
 
   FoodWastePost.fromMap(postMap) {
     date = postMap['date'];
