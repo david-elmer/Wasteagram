@@ -1,5 +1,5 @@
 class FoodWastePost {
-  String? date;
+  int? date;
   String? imageURL;
   double? latitude;
   double? longitude;

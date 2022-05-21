@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class DetailScreen extends StatelessWidget {
 
@@ -18,7 +19,7 @@ class DetailScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-              '${post['date']}',
+              DateFormat('EEE, MMMM dd, yyyy').format(DateTime.fromMillisecondsSinceEpoch(post['date'])),
               style: Theme.of(context).textTheme.headline5
             ),
           Semantics(

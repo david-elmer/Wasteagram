@@ -203,7 +203,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
             await uploadImage();
 
             // add date to post
-            post.date = DateFormat('EEE, MMMM dd, yyyy').format(DateTime.now());
+            // post.date = DateFormat('EEE, MMMM dd, yyyy').format(DateTime.now());
+            post.date = DateTime.now().millisecondsSinceEpoch;
 
             // add location to post
             await retrieveLocation();
