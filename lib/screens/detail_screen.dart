@@ -4,9 +4,9 @@ import 'package:intl/intl.dart';
 
 class DetailScreen extends StatelessWidget {
 
-  final QueryDocumentSnapshot<Object?> post;
-
   const DetailScreen({Key? key, required this.post}) : super(key: key);
+
+  final QueryDocumentSnapshot<Object?> post;
 
   @override
   Widget build(BuildContext context) {

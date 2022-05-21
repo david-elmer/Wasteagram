@@ -1,5 +1,4 @@
 import 'package:test/test.dart';
-import 'package:intl/intl.dart';
 import 'package:wasteagram/models/food_waste_post.dart';
 
 // adapted from exploration 10 - 1.1 video 

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../screens/detail_screen.dart';
 
 class PostListView extends StatelessWidget {
+  const PostListView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
