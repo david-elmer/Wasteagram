@@ -110,123 +110,140 @@ class _NewPostScreenState extends State<NewPostScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Form(
           key: formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              displayImage(),
-              itemNameInput(context),
-              quantityInput(context),
-              uploadButton(context)
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                displayImage(),
+                itemNameInput(),
+                quantityInput(),
+                uploadButton()
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  // display image picked from gallery
+  // display image picked from gallery - 
+  // display progress indicator while image is loading
   Widget displayImage() {
-    if (image == null) {
-      return const CircularProgressIndicator();
-    } else {
-      return Semantics(
+    Widget child;
+    if (image == null) {  // display progress indicator
+      child = const Center(child: CircularProgressIndicator());
+    } else {  // display image
+      child = Semantics(
         child: Image.file(image as File),
         image: true,
         label: 'Selected image',
       );
     }
+
+    return SizedBox(
+      height: 300,
+      child: child,
+    );
   }
 
   // form input for item name
-  Widget itemNameInput(BuildContext context) {
-    return TextFormField(
-      decoration: const InputDecoration(
-        hintText: 'Item Name',
-        border: UnderlineInputBorder()
+  Widget itemNameInput() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        decoration: const InputDecoration(
+          hintText: 'Item Name',
+          border: UnderlineInputBorder()
+        ),
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.headline5,
+        keyboardType: TextInputType.text,
+        onSaved: (value) {
+          if (value != null) {
+            post.item = value;
+          }
+        },
+        validator: (value) {
+          if (value != null && value.isEmpty) {
+            return 'Please enter an item name';
+          } else {
+            return null;
+          }
+        },
       ),
-      textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.headline5,
-      keyboardType: TextInputType.text,
-      onSaved: (value) {
-        if (value != null) {
-          post.item = value;
-        }
-      },
-      validator: (value) {
-        if (value != null && value.isEmpty) {
-          return 'Please enter an item name';
-        } else {
-          return null;
-        }
-      },
     );
   }
 
   // form input for quantity of items wasted
-  Widget quantityInput(BuildContext context) {
-    return TextFormField(
-      decoration: const InputDecoration(
-        hintText: 'Number of Wasted Items',
-        border: UnderlineInputBorder()
+  Widget quantityInput() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        decoration: const InputDecoration(
+          hintText: 'Number of Wasted Items',
+          border: UnderlineInputBorder()
+        ),
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.headline5,
+        keyboardType: TextInputType.number,
+        onSaved: (value) {
+          if (value != null) {
+            post.quantity = int.parse(value);
+          }
+        },
+        validator: (value) {
+          if (value != null && value.isEmpty) {
+            return 'Please enter a number of items';
+          } else {
+            return null;
+          }
+        },
       ),
-      textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.headline5,
-      keyboardType: TextInputType.number,
-      onSaved: (value) {
-        if (value != null) {
-          post.quantity = int.parse(value);
-        }
-      },
-      validator: (value) {
-        if (value != null && value.isEmpty) {
-          return 'Please enter a number of items';
-        } else {
-          return null;
-        }
-      },
     );
   }
 
   // validate input, upload image to cloud,
   // gather data for upload to database in data transfer object 'post',
   // write to database, then return to previous screen
-  Widget uploadButton(BuildContext context) {
-    return Semantics(
-      child: ElevatedButton(
-        onPressed: () async {
-          var isValid = formKey.currentState?.validate();
-          if (isValid != null && isValid) {
-            formKey.currentState?.save();
-          
-            // upload image to Cloud Firestore
-            await uploadImage();
+  Widget uploadButton() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Semantics(
+        child: ElevatedButton(
+          onPressed: () async {
+            var isValid = formKey.currentState?.validate();
+            if (isValid != null && isValid) {
+              formKey.currentState?.save();
+            
+              // upload image to Cloud Firestore
+              await uploadImage();
 
-            // add date to post
-            // post.date = DateFormat('EEE, MMMM dd, yyyy').format(DateTime.now());
-            post.date = DateTime.now().millisecondsSinceEpoch;
+              // add date to post
+              // post.date = DateFormat('EEE, MMMM dd, yyyy').format(DateTime.now());
+              post.date = DateTime.now().millisecondsSinceEpoch;
 
-            // add location to post
-            await retrieveLocation();
+              // add location to post
+              await retrieveLocation();
 
-            // write to database
-            await FirebaseFirestore.instance.collection('posts').add(post.toMap());
+              // write to database
+              await FirebaseFirestore.instance.collection('posts').add(post.toMap());
 
-            // return to list screen
-            Navigator.of(context).pop();
-          }
+              // return to list screen
+              Navigator.of(context).pop();
+            }
 
-        },
-        child: const Icon(
-          Icons.cloud_upload_rounded,
-          size: 75.0,
+          },
+          child: const Icon(
+            Icons.cloud_upload_rounded,
+            size: 75.0,
+          ),
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size.fromHeight(100)
+          )              
         ),
-        style: ElevatedButton.styleFrom(
-          minimumSize: const Size.fromHeight(100)
-        )              
+        button: true,
+        onTapHint: 'Press to upload the post',
       ),
-      button: true,
-      onTapHint: 'Press to upload the post',
     );
   }
 
