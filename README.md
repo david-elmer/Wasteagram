@@ -12,6 +12,8 @@ The fictitious client Ms. Mitchell owns a small chain of coffee shops. She envis
 
 Upon opening the app, a list of recent posts including food item, quantity left over, and the date of the post is displayed with the newest post on top.
 
+<img src="readme_assets/main_screen.png" alt="Main screen" width="200"/>
+
 ![Main screen](readme_assets/main_screen.png)
 Main Screen
 
