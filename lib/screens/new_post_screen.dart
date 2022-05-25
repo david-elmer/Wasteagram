@@ -7,21 +7,30 @@ import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 import '../models/food_waste_post.dart';
 
+
+
+// class NewPostScreen extends StatefulWidget {
+//   const NewPostScreen({Key? key}) : super(key: key);
+
 class NewPostScreen extends StatefulWidget {
-  const NewPostScreen({Key? key}) : super(key: key);
+  File? image;
+
+  NewPostScreen({Key? key, required this.image}) : super(key: key);
 
   @override
-  State<NewPostScreen> createState() => _NewPostScreenState();
+  State<NewPostScreen> createState() => _NewPostScreenState(image: image);
 }
 
 class _NewPostScreenState extends State<NewPostScreen> {
 
+  _NewPostScreenState({required this.image});
+
   // for GPS
   LocationData? locationData;
-  var locationService = Location();
+  final locationService = Location();
 
   // for image selection and storage
-  File? image;
+  final File? image;
   final picker = ImagePicker();
 
   // for form reference
@@ -29,21 +38,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   // data transfer object for submitting form
   final post = FoodWastePost();
-
-  @override
-  void initState() {
-    super.initState();
-    getImage();
-  }
-
-  // Prompt user to select image from gallery and save path to image for later
-  // use in uploading image to cloud storage
-  void getImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    image = File(pickedFile!.path);
-
-    setState(() {});
-  }
 
   // Upload image to Firebase Cloud Storage and get the URL of image for
   // storage in the database
