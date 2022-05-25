@@ -141,7 +141,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
     }
 
     return SizedBox(
-      height: 300,
+      height: 350,
       child: child,
     );
   }
