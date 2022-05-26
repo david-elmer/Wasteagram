@@ -8,6 +8,9 @@ class DetailScreen extends StatelessWidget {
 
   final QueryDocumentSnapshot<Object?> post;  // post data from database
 
+  // ------------------------------------------------------
+  // -------------------- BUILD METHOD --------------------
+  // ------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(

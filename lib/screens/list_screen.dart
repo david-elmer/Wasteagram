@@ -56,6 +56,9 @@ class ListScreen extends StatelessWidget {
     } 
   }
 
+  // ------------------------------------------------------
+  // -------------------- BUILD METHOD --------------------
+  // ------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(

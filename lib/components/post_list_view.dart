@@ -6,6 +6,9 @@ import '../screens/detail_screen.dart';
 class PostListView extends StatelessWidget {
   const PostListView({Key? key}) : super(key: key);
 
+  // ------------------------------------------------------
+  // -------------------- BUILD METHOD --------------------
+  // ------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(

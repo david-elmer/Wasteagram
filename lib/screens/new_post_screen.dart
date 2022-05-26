@@ -8,10 +8,6 @@ import 'package:location/location.dart';
 import '../models/food_waste_post.dart';
 
 
-
-// class NewPostScreen extends StatefulWidget {
-//   const NewPostScreen({Key? key}) : super(key: key);
-
 class NewPostScreen extends StatefulWidget {
   File? image;
 
@@ -93,6 +89,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
     setState(() {});
   }
 
+  // ------------------------------------------------------
+  // -------------------- BUILD METHOD --------------------
+  // ------------------------------------------------------
   @override
   Widget build(BuildContext context) {
 
